@@ -18,7 +18,7 @@ dotnet ef database update
 The migration will also seed the Database with some sample data. The extent of this data can be found in the OnModelCreating() override in the [ReservationDbContext class](./Services/ReservationDbContext.cs)
 
 ### Step 3 - API Endpoints
-There are four API Endpoints that make up this application. To communicate with any of endpoint you will need a valid, unexpired API Key associated with a User in the ApiKeys table. For simplicity these are all unencrypted plain-text GUIDS to be sent as Bearer tokens in the Authentication Header of the HTTP request.
+There are four API Endpoints that make up this application. To communicate with any of the endpoints you will need a valid, unexpired API Key associated with a User in the ApiKeys table. For simplicity these are all unencrypted plain-text GUIDS to be sent as Bearer tokens in the Authentication Header of the HTTP request.
 
 1. HTTP GET `/api/appointment/open`: This endpoint is open to Clients or Providers and will return a **paged** list of available appointments ordered by appointment date. Users can provide search criteria(as query string parameters, check out the [RequestDTO](./Services/DTOs/GetAvailableAppointmentsRequestDTO.cs) for this endpoint for more detail) composed of a range of dates(up to seven consecutive days) and\or a Provider name if they're looking for someone specific.
 
@@ -33,7 +33,7 @@ Appointments must be 15 minutes in length and must start at :00, :15, :30: or :4
 
 If a provider submits availability that does not start cleanly on a segmented time slot, the first appointment is created by rounding up to the nearest segment start after (so they don't start early than they submitted time for).
 
-Likewise, if a provider submits availability that does not end cleanly on a segment, the last appointment will begin end up to the nearest segment before (so they are not booked later than they submitted availability for).
+Likewise, if a provider submits availability that does not end cleanly on a segment, the last appointment will begin by rounding down to the nearest segment before (so they are not booked later than they submitted availability for).
 
 3. HTTP POST `/api/appointment/reserve/{appointmentId}`: This endpoint allows clients to reserve an appointment slot. The reservation must be confirmed within 30 minutes or else it will become available for another client. Clients cannot book two appointments at the same time slot.
 
